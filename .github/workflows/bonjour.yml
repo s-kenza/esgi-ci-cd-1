@@ -1,16 +1,14 @@
 name: Bonjour
 on:
-  push:
-    branches:
-      - main
+  - push
 jobs:
   dire_bonjour:
     runs-on: ubuntu-22.04
+    env:
+      IMAGE_NAME: "mynode"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: .
-
-      - run: ls -l # Liste les fichiers du répertoire courant
-      - run: cat README.md # Affiche le contenu du fichier `README.md` à la base du dépôt
+      - run: ls -l
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+      - run: docker image build --tag="${IMAGE_NAME}" ./
+      - run: docker container run "${IMAGE_NAME}" npm run lint
